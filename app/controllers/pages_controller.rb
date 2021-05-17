@@ -9,6 +9,36 @@ class PagesController < ApplicationController
         render component: "Page", props:{page: @page}
     end
 
+    def new
+        render component: "PageNew"
+    end
+
+    def edit
+        @page = Page.find(params[:id])
+        render component: "PageEdit", props:{page:@page}
+    end
+
+    def update
+        @page = Page.find(params[:id])
+        if( @page.update(page_params))
+            redirect_to pages_path
+        else
+        # page doesn't update... worry about this later
+        # want to send a message bak to user about why
+        end
+    end
+   
+    def create
+      # create page here
+      page = Page.new(page_params)
+      if page.save
+        redirect_to pages_path
+      else
+        # page doesn't save... worry about this later
+        # want to send a message bak to user about why
+      end
+    end
+
     def hotsauce
         render component: "Sauce"
     end
@@ -17,5 +47,11 @@ class PagesController < ApplicationController
         @page = Page.find(params[:id])
         @page.destroy
         redirect_to pages_path
+    end
+
+    private
+
+    def page_params
+      params.require(:page).permit(:title, :author, :body)
     end
 end
